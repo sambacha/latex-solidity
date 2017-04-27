@@ -3,7 +3,7 @@ python-lexer-solidity change log
 
 [vX.Y.Z] - Unreleased
 ---------------------
-* No unreleased changes yet.
+* Added minimal instructions in README.
 
 [v0.0.2] - 2017-04-27
 ---------------------

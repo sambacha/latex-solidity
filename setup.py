@@ -4,26 +4,28 @@ from distutils.core import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-setup(name='pygments-lexer-solidity',
-      version='0.0',
-      description='Solidity lexer for Pygments',
-      long_description=read('README.rst'),
-      author='Noel Maersk',
-      author_email='veox+packages+spamremove@veox.pw',
-      url='https://gitlab.com/veox/pygments-lexer-solidity',
-      packages=['pygments-lexer-solidity'],
-      classifiers=[
-          'Environment :: Plugins',
-          'Intended Audience :: Developers',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 3'
-      ],
-      keywords='pygments lexer highlight solidity sol ethereum',
-      install_requires=[
-          'Pygments >= 2.1'
-      ],
-      entry_points="""
-      [pygments.lexers]
-      solidity = pygments_lexer_solidity:SolidityLexer
-      """
+setup(
+    name='pygments-lexer-solidity',
+    version='0.0.1',
+    description='Solidity lexer for Pygments',
+    long_description=read('README.rst'),
+    license="MIT",
+    author='Noel Maersk',
+    author_email='veox+packages+spamremove@veox.pw',
+    url='https://gitlab.com/veox/pygments-lexer-solidity',
+    packages=['pygments-lexer-solidity'],
+    classifiers=[
+        'Environment :: Plugins',
+        'Intended Audience :: Developers',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3'
+    ],
+    keywords='pygments lexer highlight solidity sol ethereum',
+    install_requires=[
+        'pygments>=2.1'
+    ],
+    entry_points="""
+    [pygments.lexers]
+    solidity = pygments_lexer_solidity:SolidityLexer
+    """
 )

@@ -9,7 +9,7 @@ setup(
     version='0.0.1',
     description='Solidity lexer for Pygments',
     long_description=read('README.rst'),
-    license="MIT",
+    license="BSD",
     author='Noel Maersk',
     author_email='veox+packages+spamremove@veox.pw',
     url='https://gitlab.com/veox/pygments-lexer-solidity',

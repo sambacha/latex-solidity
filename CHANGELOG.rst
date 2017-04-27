@@ -1,6 +1,14 @@
 python-lexer-solidity change log
 ================================
 
+[vX.Y.Z] - Unreleased
+---------------------
+* No unreleased changes yet.
+
+[v0.0.2] - 2017-04-27
+---------------------
+* Changed license from MIT to BSD.
+
 [v0.0.1] - 2017-04-27
 ---------------------
 * Ported ``pygments-main`` `PR #626`_ to this package.

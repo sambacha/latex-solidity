@@ -13,7 +13,7 @@ setup(
     author='Noel Maersk',
     author_email='veox+packages+spamremove@veox.pw',
     url='https://gitlab.com/veox/pygments-lexer-solidity',
-    packages=['pygments-lexer-solidity'],
+    packages=['pygments_lexer_solidity'],
     classifiers=[
         'Environment :: Plugins',
         'Intended Audience :: Developers',

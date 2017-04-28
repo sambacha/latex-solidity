@@ -22,7 +22,7 @@ Depends on doc-building infrastructure.
 Sphinx
 ^^^^^^
 
-Have this in Sphinx's `conf.py`:
+Have this in Sphinx's ``conf.py``:
 
 .. code-block::
    

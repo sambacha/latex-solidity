@@ -82,7 +82,8 @@ class SolidityLexer(RegexLexer):
              r'number|difficulty|gaslimit|pop|mload|mstore|mstore8|sload|'
              r'sstore|jump|jumpi|pc|msize|gas|jumpdest|push1|push2|'
              r'push32|dup1|dup2|dup16|swap1|swap2|swap16|log0|log1|log4|'
-             r'create|call|callcode|return|delegatecall|suicide)\b',
+             r'create|call|callcode|return|delegatecall|suicide|'
+             r'returndatasize|returndatacopy|staticcall|revert)\b',
              Name.Function),
 
             # everything else is either a local/external var, or label
@@ -192,10 +193,14 @@ class SolidityLexer(RegexLexer):
             (r'[})\].]', Punctuation),
 
             (r'(block|msg|now|this|super|tx)\b', Name.Builtin),
+            (r'(sender|origin)\b', Name.Builtin),
             # built-in members, should these be Name.Function?..
             (r'(selfdestruct|suicide)\b', Name.Builtin),
-            (r'(balance|send)\b', Name.Builtin),
+            (r'(balance|send|transfer)\b', Name.Builtin),
+            (r'(assert|revert|require)\b', Name.Builtin),
             (r'(call|callcode|delegatecall)\b', Name.Builtin),
+            # call function modifier methods
+            (r'(gas|value)\b', Name.Builtin),
 
             (r'(addmod|ecrecover|mulmod|ripemd160|sha256|sha3)\b', Name.Function),
 

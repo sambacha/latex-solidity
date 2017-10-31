@@ -1,4 +1,7 @@
-pragma solidity ^0.4.1;
+pragma solidity ^0.4.18;
+pragma experimental "v0.5.0";
+pragma experimental ABIEncoderV2;
+pragma experimental SMTChecker;
 
 /**********************************************************************
  *                             example.sol                            *
@@ -12,7 +15,7 @@ pragma solidity ^0.4.1;
 /* Comments relevant to the code are multi-line. */
 
 library Assembly {
-    function junk(address _addr) returns (address _ret) {
+    function junk(address _addr) private returns (address _ret) {
         assembly {
             let tmp := 0
 
@@ -47,26 +50,29 @@ contract Strings {
 and it's multi-line. // no comment"; // comment ok // even nested :)
     string single = 'This\ is a string\nwith "escapes",\
 and it\'s multi-line. // no comment'; // same thing, single-quote
-    string hex = hex'537472696e67732e73656e6428746869732e62616c616e6365293b';
+    string hexstr = hex'537472696e67732e73656e6428746869732e62616c616e6365293b';
 
     function(){}
 }
 
 contract Types is Strings {
-    using Assembly for Assembly.junk;
+    using Assembly for Assembly;
     
-    // typesM (compiler doesn't choke on invalid)
-    int8 i8; // valid
-    int10 i10; // invalid
-    uint256 ui256; // valid
-    uint9001 ui9001; // invalid
-    bytes1 b1; //valid
-    bytes42 b42; // invalid - M out of range for `bytes`
+    // typesM (compiler chokes on invalid)
+    int8 i8;           // valid
+    //int10 i10;       // invalid
+    uint256 ui256;     // valid
+    //uint9001 ui9001; // invalid
+    bytes1 b1;         //valid
+    //bytes42 b42;     // invalid - M out of range for `bytes`
     
-    // typesMxN (compiler doesn't choke on invalid)
-    fixed0x8 f0x8; // valid
-    fixed8x0 f8x0; // invalid - N can't be 0
-    ufixed42x217 uf42x217; // invalid - M and N must be multiples of 8
+    // typesMxN (compiler chokes on invalid)
+    fixed8x0 f8x0;           // valid
+    fixed8x1 f8x1;           // valid
+    fixed8x8 f8x8;           // valid
+    //fixed0x8 f0x8;         // invalid since MxN scheme changed
+    ufixed256x80 uf256x80;   // valid
+    //ufixed42x217 uf42x217; // invalid - M must be multiple of 8, N <= 80
 
     // special cases (internally not types)
     string str; // dynamic array (not a value-type)
@@ -106,7 +112,7 @@ contract Types is Strings {
         /* inferred type: `ufixed0x256` */
         var v = 1/42;
         /* can't be `var` - location specifier requires explicit type */
-        int storage negative = -1;
+        int negative = -1;
 
         // valid syntax, unexpected result - not our problem
         ui256 = failOnNegative(negative);
@@ -116,7 +122,7 @@ contract Types is Strings {
              !touchedMe[tx.origin].touched) ||
             ((~(msg.sender * v + a)) % 256 == 42)
         ) {
-            address memory garbled = Assembly.junk(a + msg.sender);
+            address garbled = Assembly.junk(a + msg.sender);
 
             /* create a new AddressMap struct in storage */
             AddressMap storage tmp;
@@ -160,7 +166,7 @@ contract BadPractices {
     bool mutex;
 
     modifier critical {
-        if (mutex) throw;
+        assert(!mutex);
         mutex = true;
         _;
         mutex = false;
@@ -178,9 +184,9 @@ contract BadPractices {
         critical
         returns (bool)
     { /* `mutex` set via modifier */
-        if (msg.sender.call.value(_amount)())
-            throw; /* Throwing on failed call is dangerous.
-                      Consider returning false instead?.. */
+        /* Throwing on failed call may be dangerous. Consider
+           returning false instead?.. */
+        require(msg.sender.call.value(_amount)());
         return true;
     } /* `mutex` reset via modifier */
     

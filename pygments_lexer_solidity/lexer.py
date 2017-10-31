@@ -76,14 +76,15 @@ class SolidityLexer(RegexLexer):
 
             (r'(stop|add|mul|sub|div|sdiv|mod|smod|addmod|mulmod|exp|'
              r'signextend|lt|gt|slt|sgt|eq|iszero|and|or|xor|not|byte|'
-             r'sha3|address|balance|origin|caller|callvalue|calldataload|'
-             r'calldatasize|calldatacopy|codesize|codecopy|gasprice|'
-             r'extcodesize|extcodecopy|blockhash|coinbase|timestamp|'
-             r'number|difficulty|gaslimit|pop|mload|mstore|mstore8|sload|'
-             r'sstore|jump|jumpi|pc|msize|gas|jumpdest|push1|push2|'
+             r'keccak256|sha3|address|balance|origin|caller|'
+             r'callvalue|calldataload|calldatasize|calldatacopy|'
+             r'codesize|codecopy|gasprice|extcodesize|extcodecopy|'
+             r'blockhash|coinbase|timestamp|number|difficulty|gaslimit|'
+             r'pop|mload|mstore|mstore8|sload|sstore|for|switch|'
+             r'jump|jumpi|pc|msize|gas|jumpdest|push1|push2|'
              r'push32|dup1|dup2|dup16|swap1|swap2|swap16|log0|log1|log4|'
              r'create|call|callcode|return|delegatecall|suicide|'
-             r'returndatasize|returndatacopy|staticcall|revert)\b',
+             r'returndatasize|returndatacopy|staticcall|revert|invalid)\b',
              Name.Function),
 
             # everything else is either a local/external var, or label
@@ -103,14 +104,14 @@ class SolidityLexer(RegexLexer):
 
             (r'assembly\b', Keyword, 'assembly'),
 
-            (words(('contract', 'enum', 'event', 'function',
+            (words(('contract', 'interface', 'enum', 'event', 'function',
                     'library', 'mapping', 'modifier', 'struct', 'var'),
                    suffix=r'\b'), Keyword.Declaration),
 
             (r'(import|using)\b', Keyword.Namespace),
 
             # misc keywords
-            (r'pragma solidity\b', Keyword.Reserved),
+            (r'pragma (solidity|experimental)\b', Keyword.Reserved),
             (r'(_|as|constant|default|from|is)\b', Keyword.Reserved),
             # built-in modifier
             (r'payable\b', Keyword.Reserved),
@@ -121,7 +122,7 @@ class SolidityLexer(RegexLexer):
             # event parameter specifiers
             (r'(anonymous|indexed)\b', Keyword.Reserved),
             # added in `solc v0.4.0`, not covered elsewhere
-            (r'(abstract|interface|pure|static|view)\b', Keyword.Reserved),
+            (r'(abstract|pure|static|view)\b', Keyword.Reserved),
 
             (r'(true|false)\b', Keyword.Constant),
             (r'(wei|finney|szabo|ether)\b', Keyword.Constant),
@@ -138,9 +139,9 @@ class SolidityLexer(RegexLexer):
                    suffix=r'\b'), Keyword.Type),
             (words(type_names('bytes', range(1, 32+1)),
                    suffix=r'\b'), Keyword.Type),
-            (words(type_names_mn('fixed', range(0, 256+1, 8), range(8, 256+1, 8)),
+            (words(type_names_mn('fixed', range(8, 256+1, 8), range(0, 80+1, 1)),
                    suffix=r'\b'), Keyword.Type),
-            (words(type_names_mn('ufixed', range(0, 256+1, 8), range(8, 256+1, 8)),
+            (words(type_names_mn('ufixed', range(8, 256+1, 8), range(0, 80+1, 1)),
                    suffix=r'\b'), Keyword.Type),
         ],
         'numbers': [
@@ -192,17 +193,21 @@ class SolidityLexer(RegexLexer):
             (r'[{(\[;,]', Punctuation),
             (r'[})\].]', Punctuation),
 
+            # built-in
             (r'(block|msg|now|this|super|tx)\b', Name.Builtin),
             (r'(sender|origin)\b', Name.Builtin),
+            # call function modifier methods
+            (r'(gas|value)\b', Name.Builtin),
+
             # built-in members, should these be Name.Function?..
             (r'(selfdestruct|suicide)\b', Name.Builtin),
             (r'(balance|send|transfer)\b', Name.Builtin),
             (r'(assert|revert|require)\b', Name.Builtin),
             (r'(call|callcode|delegatecall)\b', Name.Builtin),
-            # call function modifier methods
-            (r'(gas|value)\b', Name.Builtin),
-
-            (r'(addmod|ecrecover|mulmod|ripemd160|sha256|sha3)\b', Name.Function),
+            (r'selector\b', Name.Builtin),
+            # built-in functions
+            (r'(addmod|ecrecover|keccak256|mulmod|ripemd160|sha256|sha3)\b',
+             Name.Function),
 
             # everything else is a var/function name
             ('[a-zA-Z_]\w*', Name)

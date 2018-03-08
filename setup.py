@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name='pygments-lexer-solidity',
-    version='0.0.3',
+    version='0.1.0',
     description='Solidity lexer for Pygments',
     long_description=read('README.rst'),
     license="BSD",
@@ -20,7 +20,7 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3'
     ],
-    keywords='pygments lexer highlight solidity sol ethereum',
+    keywords='pygments lexer syntax highlight solidity sol ethereum',
     install_requires=[
         'pygments>=2.1'
     ],

@@ -1,8 +1,13 @@
 python-lexer-solidity change log
 ================================
 
-[vX.Y.Z] - Unreleased
+[v0.1.0] - 2018-03-08
 ---------------------
+* Updated keywords to those of `solc` v0.4.21.
+
+[v0.0.3] - 2017-10-31
+---------------------
+* Updated keywords to those of `solc` v0.4.18.
 * Added minimal instructions in README.
 
 [v0.0.2] - 2017-04-27

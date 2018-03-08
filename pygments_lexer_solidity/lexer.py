@@ -74,6 +74,9 @@ class SolidityLexer(RegexLexer):
             (r'(let)(\s*)(\w*\b)', bygroups(Operator.Word, Text, Name.Variable)),
             (r'(\w*\b)(\:[^=])', bygroups(Name.Label, Punctuation)),
 
+            (r'if\b', Keyword.Reserved),
+
+            # evm instructions
             (r'(stop|add|mul|sub|div|sdiv|mod|smod|addmod|mulmod|exp|'
              r'signextend|lt|gt|slt|sgt|eq|iszero|and|or|xor|not|byte|'
              r'keccak256|sha3|address|balance|origin|caller|'
@@ -113,6 +116,7 @@ class SolidityLexer(RegexLexer):
             # misc keywords
             (r'pragma (solidity|experimental)\b', Keyword.Reserved),
             (r'(_|as|constant|default|from|is)\b', Keyword.Reserved),
+            (r'emit\b', Keyword.Reserved),
             # built-in modifier
             (r'payable\b', Keyword.Reserved),
             # variable location specifiers
@@ -124,6 +128,7 @@ class SolidityLexer(RegexLexer):
             # added in `solc v0.4.0`, not covered elsewhere
             (r'(abstract|pure|static|view)\b', Keyword.Reserved),
 
+            # built-in constants
             (r'(true|false)\b', Keyword.Constant),
             (r'(wei|finney|szabo|ether)\b', Keyword.Constant),
             (r'(seconds|minutes|hours|days|weeks|years)\b', Keyword.Constant),
@@ -199,13 +204,13 @@ class SolidityLexer(RegexLexer):
             # call function modifier methods
             (r'(gas|value)\b', Name.Builtin),
 
-            # built-in members, should these be Name.Function?..
+            # built-in members, should these be [Name.Function|Keyword]?..
             (r'(selfdestruct|suicide)\b', Name.Builtin),
             (r'(balance|send|transfer)\b', Name.Builtin),
             (r'(assert|revert|require)\b', Name.Builtin),
             (r'(call|callcode|delegatecall)\b', Name.Builtin),
             (r'selector\b', Name.Builtin),
-            # built-in functions
+            # built-in functions and/or precompiles
             (r'(addmod|ecrecover|keccak256|mulmod|ripemd160|sha256|sha3)\b',
              Name.Function),
 

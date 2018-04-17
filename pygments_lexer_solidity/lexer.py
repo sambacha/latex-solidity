@@ -204,19 +204,25 @@ class SolidityLexer(RegexLexer):
             (r'selector\b', Name.Builtin),
 
             # built-ins with sub-members that are EVM instructions X_X
-            (r'(block|msg|tx)\b', Name.Builtin),
+            (r'(abi|block|msg|tx)\b', Name.Builtin),
             # the sub-members
+            (r'(encode|encodePacked|encodeWithSelector|encodeWithSignature)\b',
+             Name.Builtin),
             (r'hash\b', Name.Builtin),
             (r'(gas|value)\b', Name.Builtin),
             (r'(sender|origin)\b', Name.Builtin),
+
+            # like block.hash and msg.gas above
+            (r'(blockhash|gasleft)\b', Name.Function),
 
             # actually evm instructions, should be [Name.Function|Keyword]?..
             (r'(balance|now)\b', Name.Builtin),
             (r'(selfdestruct|suicide)\b', Name.Builtin),
 
             # processed into many-instructions
-            (r'(send|transfer|call|callcode|delegatecall)\b', Name.Builtin),
-            (r'(assert|revert|require)\b', Name.Builtin),
+            (r'(send|transfer|call|callcode|delegatecall)\b', Name.Function),
+            (r'(assert|revert|require)\b', Name.Function),
+            (r'push\b', Name.Function),
 
             # built-in functions and/or precompiles
             (r'(addmod|ecrecover|keccak256|mulmod|ripemd160|sha256|sha3)\b',

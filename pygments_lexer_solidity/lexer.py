@@ -108,7 +108,8 @@ class SolidityLexer(RegexLexer):
             (r'assembly\b', Keyword, 'assembly'),
 
             (words(('contract', 'interface', 'enum', 'event', 'function',
-                    'library', 'mapping', 'modifier', 'struct', 'var'),
+                    'constructor', 'library', 'mapping', 'modifier',
+                    'struct', 'var'),
                    suffix=r'\b'), Keyword.Declaration),
 
             (r'(import|using)\b', Keyword.Namespace),
@@ -198,18 +199,24 @@ class SolidityLexer(RegexLexer):
             (r'[{(\[;,]', Punctuation),
             (r'[})\].]', Punctuation),
 
-            # built-in
-            (r'(block|msg|now|this|super|tx)\b', Name.Builtin),
-            (r'(sender|origin)\b', Name.Builtin),
-            # call function modifier methods
-            (r'(gas|value)\b', Name.Builtin),
-
-            # built-in members, should these be [Name.Function|Keyword]?..
-            (r'(selfdestruct|suicide)\b', Name.Builtin),
-            (r'(balance|send|transfer)\b', Name.Builtin),
-            (r'(assert|revert|require)\b', Name.Builtin),
-            (r'(call|callcode|delegatecall)\b', Name.Builtin),
+            # compiler built-ins
+            (r'(this|super)\b', Name.Builtin),
             (r'selector\b', Name.Builtin),
+
+            # built-ins with sub-members that are EVM instructions X_X
+            (r'(block|msg|tx)\b', Name.Builtin),
+            # the sub-members
+            (r'(gas|value)\b', Name.Builtin),
+            (r'(sender|origin)\b', Name.Builtin),
+
+            # actually evm instructions, should be [Name.Function|Keyword]?..
+            (r'(balance|now)\b', Name.Builtin),
+            (r'(selfdestruct|suicide)\b', Name.Builtin),
+
+            # processed into many-instructions
+            (r'(send|transfer|call|callcode|delegatecall)\b', Name.Builtin),
+            (r'(assert|revert|require)\b', Name.Builtin),
+
             # built-in functions and/or precompiles
             (r'(addmod|ecrecover|keccak256|mulmod|ripemd160|sha256|sha3)\b',
              Name.Function),

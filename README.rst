@@ -38,4 +38,4 @@ Then use ``.. code-block:: solidity`` for Solidity code blocks.
 License
 -------
 
-BSD variant. See ``LICENSE.txt``.
+BSD 2-clause simplified. See ``LICENSE.txt``.

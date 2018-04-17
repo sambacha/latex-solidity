@@ -206,6 +206,7 @@ class SolidityLexer(RegexLexer):
             # built-ins with sub-members that are EVM instructions X_X
             (r'(block|msg|tx)\b', Name.Builtin),
             # the sub-members
+            (r'hash\b', Name.Builtin),
             (r'(gas|value)\b', Name.Builtin),
             (r'(sender|origin)\b', Name.Builtin),
 

@@ -97,11 +97,20 @@ class SolidityLexer(RegexLexer):
         'natspec': [
             (r'@(author|dev|notice|param|return|title)\b', Comment.Special),
         ],
+        'comment-parse-single': [
+            include('natspec'),
+            (r'\n', Comment.Single, '#pop'),
+            (r'[^\n]', Comment.Single),
+        ],
+        'comment-parse-multi': [
+            include('natspec'),
+            (r'[^*/]', Comment.Multiline),
+            (r'\*/', Comment.Multiline, '#pop'),
+            (r'[*/]', Comment.Multiline),
+        ],
         'comments': [
-            (r'//([\w\W]*?\n)', Comment.Single),
-            (r'/[*][\w\W]*?[*]/', Comment.Multiline),
-            # Open until EOF, so no ending delimiter
-            (r'/[*][\w\W]*', Comment.Multiline),
+            (r'//', Comment.Single, 'comment-parse-single'),
+            (r'/[*]', Comment.Multiline, 'comment-parse-multi'),
         ],
         'keywords-other': [
             (words(('for', 'in', 'while', 'do', 'break', 'return',

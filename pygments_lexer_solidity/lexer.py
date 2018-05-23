@@ -93,6 +93,10 @@ class SolidityLexer(RegexLexer):
             # everything else is either a local/external var, or label
             ('[a-zA-Z_]\w*', Name)
         ],
+        # FIXME: not used!
+        'natspec': [
+            (r'@(author|dev|notice|param|return|title)\b', Comment.Special),
+        ],
         'comments': [
             (r'//([\w\W]*?\n)', Comment.Single),
             (r'/[*][\w\W]*?[*]/', Comment.Multiline),

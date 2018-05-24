@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name='pygments-lexer-solidity',
-    version='0.3.0',
+    version='0.3.1',
     description='Solidity lexer for Pygments',
     long_description=read('README.rst'),
     license="BSD",

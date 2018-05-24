@@ -1,6 +1,14 @@
 python-lexer-solidity change log
 ================================
 
+[v0.3.1] - 2018-05-24
+---------------------
+Changed
+^^^^^^^
+* Only match actual "nested" keywords (global variables), not all
+  instances of their partials; e.g., ``msg.sender`` but not ``sender``.
+
+
 [v0.3.0] - 2018-05-24
 ---------------------
 Added

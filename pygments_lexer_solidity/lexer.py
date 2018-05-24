@@ -163,6 +163,12 @@ class SolidityLexer(RegexLexer):
             (words(type_names_mn('ufixed', range(8, 256+1, 8), range(0, 80+1, 1)),
                    suffix=r'\b'), Keyword.Type),
         ],
+        'keywords-nested': [
+            (r'abi\.encode(|Packed|WithSelector|WithSignature)\b', Name.Builtin),
+            (r'block\.(blockhash|coinbase|difficulty|gaslimit|hash|number|timestamp)\b', Name.Builtin),
+            (r'msg\.(data|gas|sender|value)\b', Name.Builtin),
+            (r'tx\.(gasprice|origin)\b', Name.Builtin),
+        ],
         'numbers': [
             (r'0[xX][0-9a-fA-F]+', Number.Hex),
             (r'[0-9][0-9]*\.[0-9]+([eE][0-9]+)?', Number.Float),
@@ -202,6 +208,7 @@ class SolidityLexer(RegexLexer):
         'root': [
             include('comments'),
             include('keywords-types'),
+            include('keywords-nested'),
             include('keywords-other'),
             include('numbers'),
             include('strings'),
@@ -217,19 +224,10 @@ class SolidityLexer(RegexLexer):
             (r'(this|super)\b', Name.Builtin),
             (r'selector\b', Name.Builtin),
 
-            # built-ins with sub-members that are EVM instructions X_X
-            (r'(abi|block|msg|tx)\b', Name.Builtin),
-            # the sub-members
-            (r'(encode|encodePacked|encodeWithSelector|encodeWithSignature)\b',
-             Name.Builtin),
-            (r'hash\b', Name.Builtin),
-            (r'(gas|value)\b', Name.Builtin),
-            (r'(sender|origin)\b', Name.Builtin),
-
-            # like block.hash and msg.gas above
+            # like block.hash and msg.gas in `keywords-nested`
             (r'(blockhash|gasleft)\b', Name.Function),
 
-            # actually evm instructions, should be [Name.Function|Keyword]?..
+            # actually evm instructions, should be Name.Function?..
             (r'(balance|now)\b', Name.Builtin),
             (r'(selfdestruct|suicide)\b', Name.Builtin),
 

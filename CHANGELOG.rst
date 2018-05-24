@@ -1,25 +1,50 @@
 python-lexer-solidity change log
 ================================
 
+[v0.3.0] - 2018-05-24
+---------------------
+Added
+^^^^^
+* NatSpec ``@special`` keywords.
+* Integers in exponential notation.
+* Floating-point numbers.
+
+
 [v0.2.0] - 2018-04-17
 ---------------------
-* Updated keywords to those of `solc` v0.4.22.
+Changed
+^^^^^^^
+* Updated keywords to those of ``solc`` v0.4.22.
+
 
 [v0.1.0] - 2018-03-08
 ---------------------
-* Updated keywords to those of `solc` v0.4.21.
+Changed
+^^^^^^^
+* Updated keywords to those of ``solc`` v0.4.21.
+
 
 [v0.0.3] - 2017-10-31
 ---------------------
-* Updated keywords to those of `solc` v0.4.18.
-* Added minimal instructions in README.
+Added
+^^^^^
+* Minimal instructions in README.
+
+Changed
+^^^^^^^
+* Updated keywords to those of ``solc`` v0.4.18.
+
 
 [v0.0.2] - 2017-04-27
 ---------------------
-* Changed license from MIT to BSD.
+Changed
+^^^^^^^
+* License: from MIT to BSD.
 
 [v0.0.1] - 2017-04-27
 ---------------------
+Added
+^^^^^
 * Ported ``pygments-main`` `PR #626`_ to this package.
 
 .. _PR #626: https://bitbucket.org/birkenfeld/pygments-main/pull-requests/626/add-solidity-lexer

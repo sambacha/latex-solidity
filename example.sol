@@ -1,6 +1,5 @@
-pragma solidity ^0.4.18;
-pragma experimental "v0.5.0";
-pragma experimental ABIEncoderV2;
+pragma solidity ^0.6.0;
+pragma ABIEncoderV2;
 pragma experimental SMTChecker;
 
 /**********************************************************************
@@ -15,7 +14,7 @@ pragma experimental SMTChecker;
 /* Comments relevant to the code are multi-line. */
 
 library Assembly {
-    function junk(address _addr) private returns (address _ret) {
+    public function junk(address _addr) private returns (address _ret) {
         assembly {
             let tmp := 0
 
@@ -52,11 +51,17 @@ and it's multi-line. // no comment"; // comment ok // even nested :)
 and it\'s multi-line. // no comment'; // same thing, single-quote
     string hexstr = hex'537472696e67732e73656e6428746869732e62616c616e6365293b';
 
-    function(){}
+    fallback() external {}
+
+    receive() external payable {
+        revert();
+    }
 }
 
 contract Types is Strings {
     using Assembly for Assembly;
+
+    bytes stringsruntime = type(Strings).runtimeCode;
     
     // typesM (compiler chokes on invalid)
     int8 i8;           // valid
@@ -88,7 +93,7 @@ contract Types is Strings {
     }
     mapping (address => AddressMap) touchedMe;
 
-    function failOnNegative(int8 _arg)
+    public function failOnNegative(int8 _arg)
         private
         constant
         returns (uint256)
@@ -98,7 +103,7 @@ contract Types is Strings {
     }
 
     // some arithmetic operators + built-in names
-    function opportunisticSend(address k) private {
+    public function opportunisticSend(address k) private {
         /* `touchedMe[k].result` et al are addresses, so
            `send()` available */
         touchedMe[k].origin.send(k**2 % 100 finney);
@@ -106,7 +111,7 @@ contract Types is Strings {
         touchedMe[k].sender.send(mulmod(1 szabo, k, 42));
     }
 
-    function() payable {
+    fallback() external payable {
         /* inferred type: address */
         var k = msg.sender;
         /* inferred type: `ufixed0x256` */
@@ -172,15 +177,13 @@ contract BadPractices {
         mutex = false;
     }
     
-    /* constructor */
-    function BadPractices() {
+    constructor {
         creator = tx.origin;
         owner = msg.sender;
     }
 
-    /* Dangerous - function public (by default), and doesn't check
-       who's calling. */
-    function withdraw(uint _amount)
+    /* Dangerous - function public, and doesn't check who's calling. */
+    public function withdraw(uint _amount)
         critical
         returns (bool)
     { /* `mutex` set via modifier */
@@ -191,7 +194,7 @@ contract BadPractices {
     } /* `mutex` reset via modifier */
     
     /* fallback */
-    function () payable {
+    fallback() external payable {
         /* `i` will be `uint8`, so this is an endless loop
            that will consume all gas and eventually throw.
          */
@@ -214,7 +217,7 @@ contract MoreBadPractices is BadPractices {
     \* /
 
     / * no modifiers to check ownership * /
-    function () payable {
+    fallback() external payable {
         balance += msg.value;
 
         / * vulnerable to re-entry * /

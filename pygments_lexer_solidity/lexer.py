@@ -93,7 +93,8 @@ class SolidityLexer(RegexLexer):
             # everything else is either a local/external var, or label
             ('[a-zA-Z_]\w*', Name)
         ],
-        # FIXME: not used!
+        # TODO: Yul parsing (not implemented ATM)
+        #'yul': [],
         'natspec': [
             (r'@(author|dev|notice|param|return|title)\b', Comment.Special),
         ],
@@ -115,7 +116,7 @@ class SolidityLexer(RegexLexer):
         'keywords-other': [
             (words(('for', 'in', 'while', 'do', 'break', 'return',
                     'returns', 'continue', 'if', 'else', 'throw',
-                    'new', 'delete'),
+                    'new', 'delete', 'try', 'catch'),
                    suffix=r'\b'), Keyword),
 
             (r'assembly\b', Keyword, 'assembly'),
@@ -127,8 +128,9 @@ class SolidityLexer(RegexLexer):
 
             (r'(import|using)\b', Keyword.Namespace),
 
+            # pragmas are not pragmatic in their formatting :/
+            (r'pragma( experimental| solidity|)\b', Keyword.Reserved),
             # misc keywords
-            (r'pragma (solidity|experimental)\b', Keyword.Reserved),
             (r'(_|as|constant|default|from|is)\b', Keyword.Reserved),
             (r'emit\b', Keyword.Reserved),
             # built-in modifier
@@ -139,8 +141,19 @@ class SolidityLexer(RegexLexer):
             (r'(external|internal|private|public)\b', Keyword.Reserved),
             # event parameter specifiers
             (r'(anonymous|indexed)\b', Keyword.Reserved),
-            # added in `solc v0.4.0`, not covered elsewhere
+            # added in solc v0.4.0, not covered elsewhere
             (r'(abstract|pure|static|view)\b', Keyword.Reserved),
+            # access to contracts' codes and name
+            (r'type\(.*\)\.(creationCode|runtimeCode|name)\b', Keyword.Reserved),
+
+            # reserved for future use since solc v0.5.0
+            (words(('alias', 'apply', 'auto', 'copyof', 'define', 'immutable',
+                    'implements', 'macro', 'mutable', 'override', 'partial',
+                    'promise', 'reference', 'sealed', 'sizeof', 'supports',
+                    'typedef', 'unchecked'),
+                   suffix=r'\b'), Keyword.Reserved),
+            # reserved for future use since solc v0.6.0
+            (r'virtual\b', Keyword.Reserved),
 
             # built-in constants
             (r'(true|false)\b', Keyword.Constant),
@@ -223,6 +236,9 @@ class SolidityLexer(RegexLexer):
             # compiler built-ins
             (r'(this|super)\b', Name.Builtin),
             (r'selector\b', Name.Builtin),
+
+            # receive/fallback functions
+            (r'(receive|fallback)\b', Keyword.Function),
 
             # like block.hash and msg.gas in `keywords-nested`
             (r'(blockhash|gasleft)\b', Name.Function),

@@ -7,7 +7,7 @@ pragma experimental SMTChecker;
  **********************************************************************/
 
 // Code in this contract is not meant to work (or be a good example).
-// It is meant to demonstrate good syntax highlighting by pygments,
+// It is meant to demonstrate good syntax highlighting by the lexer,
 // even if otherwise hazardous.
 
 // Comments relevant to the lexer are single-line.

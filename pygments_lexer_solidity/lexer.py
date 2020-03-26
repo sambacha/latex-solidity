@@ -131,7 +131,7 @@ class SolidityLexer(RegexLexer):
             # pragmas are not pragmatic in their formatting :/
             (r'pragma( experimental| solidity|)\b', Keyword.Reserved),
             # misc keywords
-            (r'(_|as|constant|default|from|is)\b', Keyword.Reserved),
+            (r'(_|as|constant|from|is)\b', Keyword.Reserved),
             (r'emit\b', Keyword.Reserved),
             # built-in modifier
             (r'payable\b', Keyword.Reserved),
@@ -146,6 +146,11 @@ class SolidityLexer(RegexLexer):
             # access to contracts' codes and name
             (r'type\(.*\)\.(creationCode|runtimeCode|name)\b', Keyword.Reserved),
 
+            # reserved for future use since don't-remember-when
+            (words(('after', 'case', 'default', 'final', 'in', 'inline',
+                    'let', 'match', 'null', 'of', 'relocatable', 'static',
+                    'switch', 'typeof'),
+                   suffix=r'\b'), Keyword.Reserved),
             # reserved for future use since solc v0.5.0
             (words(('alias', 'apply', 'auto', 'copyof', 'define', 'immutable',
                     'implements', 'macro', 'mutable', 'override', 'partial',

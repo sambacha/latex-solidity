@@ -279,6 +279,6 @@ class SolidityLexer(RegexLexer):
                    suffix=r'\b'), Name.Function),
 
             # everything else is a var/function name
-            ('[a-zA-Z_]\w*', Name)
+            ('[a-zA-Z$_]\w*', Name)
         ] # 'root'
     } # tokens

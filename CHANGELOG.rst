@@ -1,6 +1,24 @@
 python-lexer-solidity change log
 ================================
 
+[v0.4.1] - 2020-04-03
+---------------------
+Added
+^^^^^
+* Missing keywords, such as ``calldata``, as identified in
+  `lexer PR for Rouge`_.
+* Use of ``$`` in names.
+
+.. _lexer PR for Rouge: https://github.com/rouge-ruby/rouge/pull/760
+
+Changed
+^^^^^^^
+* Corrected M, N ranges for ``[u]fixed{M}x{N}`` types.
+* Re-classified many keywords from ``Keywords.Reserved`` to just
+  ``Keywords``, since they now have functionality, or were previosly
+  erroneously mis-classified.
+
+
 [v0.4.0] - 2019-12-23
 ---------------------
 Changed

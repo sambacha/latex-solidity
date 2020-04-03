@@ -73,8 +73,10 @@ class SolidityLexer(RegexLexer):
             (r'\}', Punctuation, '#pop'),
             (r'[(),]', Punctuation),
             (r':=|=:', Operator),
-            (r'(let)(\s*)(\w*\b)', bygroups(Operator.Word, Text, Name.Variable)),
-            (r'(\w*\b)(\:[^=])', bygroups(Name.Label, Punctuation)),
+            (r'(let)(\s*)(\w*\b)',
+             bygroups(Operator.Word, Text, Name.Variable)),
+            (r'(\w*\b)(\:[^=])',
+             bygroups(Name.Label, Punctuation)),
 
             (r'if\b', Keyword.Reserved),
 
@@ -89,7 +91,8 @@ class SolidityLexer(RegexLexer):
              r'jump|jumpi|pc|msize|gas|jumpdest|push1|push2|'
              r'push32|dup1|dup2|dup16|swap1|swap2|swap16|log0|log1|log4|'
              r'create|call|callcode|return|delegatecall|suicide|'
-             r'returndatasize|returndatacopy|staticcall|revert|invalid)\b',
+             r'returndatasize|returndatacopy|staticcall|revert|'
+             r'invalid)\b',
              Name.Function),
 
             # everything else is either a local/external var, or label
@@ -135,8 +138,10 @@ class SolidityLexer(RegexLexer):
                    suffix=r'\b'), Keyword.Reserved),
         ],
         'keywords-nested': [
-            (r'abi\.encode(|Packed|WithSelector|WithSignature)\b', Name.Builtin),
-            (r'block\.(blockhash|coinbase|difficulty|gaslimit|hash|number|timestamp)\b', Name.Builtin),
+            (r'abi\.encode(|Packed|WithSelector|WithSignature)\b',
+             Name.Builtin),
+            (r'block\.(blockhash|coinbase|difficulty|gaslimit|hash|'
+             r'number|timestamp)\b', Name.Builtin),
             (r'msg\.(data|gas|sender|value)\b', Name.Builtin),
             (r'tx\.(gasprice|origin)\b', Name.Builtin),
         ],
@@ -171,7 +176,8 @@ class SolidityLexer(RegexLexer):
             # added in solc v0.4.0, not covered elsewhere
             (r'(abstract|pure|static|view)\b', Keyword.Reserved),
             # access to contracts' codes and name
-            (r'type\(.*\)\.(creationCode|runtimeCode|name)\b', Keyword.Reserved),
+            (r'type\(.*\)\.(creationCode|runtimeCode|name)\b',
+             Keyword.Reserved),
 
             # reserved for future use since don't-remember-when
             (words(('after', 'case', 'default', 'final', 'in', 'inline',
@@ -179,10 +185,11 @@ class SolidityLexer(RegexLexer):
                     'switch', 'typeof'),
                    suffix=r'\b'), Keyword.Reserved),
             # reserved for future use since solc v0.5.0
-            (words(('alias', 'apply', 'auto', 'copyof', 'define', 'immutable',
-                    'implements', 'macro', 'mutable', 'override', 'partial',
-                    'promise', 'reference', 'sealed', 'sizeof', 'supports',
-                    'typedef', 'unchecked'),
+            (words(('alias', 'apply', 'auto', 'copyof', 'define',
+                    'immutable', 'implements', 'macro', 'mutable',
+                    'override', 'partial', 'promise', 'reference',
+                    'sealed', 'sizeof', 'supports', 'typedef',
+                    'unchecked'),
                    suffix=r'\b'), Keyword.Reserved),
             # reserved for future use since solc v0.6.0
             (r'virtual\b', Keyword.Reserved),
@@ -190,10 +197,12 @@ class SolidityLexer(RegexLexer):
             # built-in constants
             (r'(true|false)\b', Keyword.Constant),
             (r'(wei|finney|szabo|ether)\b', Keyword.Constant),
-            (r'(seconds|minutes|hours|days|weeks|years)\b', Keyword.Constant),
+            (r'(seconds|minutes|hours|days|weeks|years)\b',
+             Keyword.Constant),
         ],
         'natspec': [
-            (r'@(author|dev|notice|param|return|title)\b', Comment.Special),
+            (r'@(author|dev|notice|param|return|title)\b',
+             Comment.Special),
         ],
         'numbers': [
             (r'0[xX][0-9a-fA-F]+', Number.Hex),
@@ -260,13 +269,15 @@ class SolidityLexer(RegexLexer):
             (r'(blockhash|gasleft)\b', Name.Function),
 
             # processed into many-instructions
-            (r'(send|transfer|call|callcode|delegatecall)\b', Name.Function),
+            (r'(send|transfer|call|callcode|delegatecall)\b',
+             Name.Function),
             (r'(assert|revert|require)\b', Name.Function),
             (r'push\b', Name.Function),
 
             # built-in functions and/or precompiles
-            (r'(addmod|ecrecover|keccak256|mulmod|ripemd160|sha256|sha3)\b',
-             Name.Function),
+            (words(('addmod', 'ecrecover', 'keccak256', 'mulmod',
+                    'sha256', 'sha3', 'ripemd160'),
+                   suffix=r'\b'), Name.Function),
 
             # everything else is a var/function name
             ('[a-zA-Z_]\w*', Name)

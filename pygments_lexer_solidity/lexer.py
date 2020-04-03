@@ -168,7 +168,7 @@ class SolidityLexer(RegexLexer):
             # built-in modifier
             (r'payable\b', Keyword),
             # variable location specifiers
-            (r'(memory|storage)\b', Keyword),
+            (r'(calldata|memory|storage)\b', Keyword),
             # method visibility specifiers
             (r'(external|internal|private|public)\b', Keyword),
             # event parameter specifiers

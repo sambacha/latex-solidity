@@ -115,6 +115,33 @@ class SolidityLexer(RegexLexer):
             (r'//', Comment.Single, 'comment-parse-single'),
             (r'/[*]', Comment.Multiline, 'comment-parse-multi'),
         ],
+        'keywords-builtins': [
+            # compiler built-ins
+            (r'(balance|now)\b', Name.Builtin),
+            (r'selector\b', Name.Builtin),
+            (r'(super|this)\b', Name.Builtin),
+        ],
+        'keywords-functions': [
+            # receive/fallback functions
+            (r'(receive|fallback)\b', Keyword.Function),
+
+            # like block.hash and msg.gas in `keywords-nested`
+            (r'(blockhash|gasleft)\b', Name.Function),
+
+            # single-instruction yet function syntax
+            (r'(selfdestruct|suicide)\b', Name.Function),
+
+            # processed into many-instructions
+            (r'(send|transfer|call|callcode|delegatecall)\b',
+             Name.Function),
+            (r'(assert|revert|require)\b', Name.Function),
+            (r'push\b', Name.Function),
+
+            # built-in functions and/or precompiles
+            (words(('addmod', 'ecrecover', 'keccak256', 'mulmod',
+                    'sha256', 'sha3', 'ripemd160'),
+                   suffix=r'\b'), Name.Function),
+        ],
         'keywords-types': [
             (words(('address', 'bool', 'byte', 'bytes', 'int', 'string',
                     'uint'),
@@ -242,6 +269,8 @@ class SolidityLexer(RegexLexer):
 
         'root': [
             include('comments'),
+            include('keywords-builtins'),
+            include('keywords-functions'),
             include('keywords-types'),
             include('keywords-nested'),
             include('keywords-other'),
@@ -254,29 +283,6 @@ class SolidityLexer(RegexLexer):
 
             (r'[{(\[;,]', Punctuation),
             (r'[})\].]', Punctuation),
-
-            # compiler built-ins
-            (r'(balance|now)\b', Name.Builtin),
-            (r'selector\b', Name.Builtin),
-            (r'(super|this)\b', Name.Builtin),
-            (r'(selfdestruct|suicide)\b', Name.Builtin),
-
-            # receive/fallback functions
-            (r'(receive|fallback)\b', Keyword.Function),
-
-            # like block.hash and msg.gas in `keywords-nested`
-            (r'(blockhash|gasleft)\b', Name.Function),
-
-            # processed into many-instructions
-            (r'(send|transfer|call|callcode|delegatecall)\b',
-             Name.Function),
-            (r'(assert|revert|require)\b', Name.Function),
-            (r'push\b', Name.Function),
-
-            # built-in functions and/or precompiles
-            (words(('addmod', 'ecrecover', 'keccak256', 'mulmod',
-                    'sha256', 'sha3', 'ripemd160'),
-                   suffix=r'\b'), Name.Function),
 
             # everything else is a var/function name
             ('[a-zA-Z$_]\w*', Name)

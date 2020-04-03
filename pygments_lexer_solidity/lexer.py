@@ -26,14 +26,16 @@ class SolidityLexer(RegexLexer):
 
     name = 'Solidity'
     aliases = ['sol', 'solidity']
-    filenames = ['*.sol']
-    mimetypes = []
+    filenames = ['*.sol', '*.solidity']
+    mimetypes = ['text/x-solidity']
 
     flags = re.DOTALL | re.UNICODE | re.MULTILINE
 
     def type_names(prefix, sizerange):
         """
         Helper for type name generation, like: bytes1 .. bytes32
+
+        Assumes that the size range passed in is valid.
         """
         namelist = []
         for i in sizerange: namelist.append(prefix + str(i))
@@ -42,6 +44,8 @@ class SolidityLexer(RegexLexer):
     def type_names_mn(prefix, sizerangem, sizerangen):
         """
         Helper for type name generation, like: fixed0x8 .. fixed0x256
+
+        Assumes that the size range passed in is valid.
         """
         lm = []
         ln = []
@@ -51,9 +55,7 @@ class SolidityLexer(RegexLexer):
         for i in sizerangem: lm.append(i)
         for i in sizerangen: ln.append(i)
 
-        # sizes (in bits) are valid if (%8 == 0) and (m+n <= 256)
-        # first condition is covered by passing proper sizerange{m,n}
-        validpairs = [tuple([m,n]) for m in lm for n in ln if m+n<=256]
+        validpairs = [tuple([m,n]) for m in lm for n in ln]
         for i in validpairs:
             namelist.append(prefix + str(i[0]) + 'x' + str(i[1]))
 
@@ -111,20 +113,26 @@ class SolidityLexer(RegexLexer):
             (r'/[*]', Comment.Multiline, 'comment-parse-multi'),
         ],
         'keywords-types': [
-            (words(('address', 'bool', 'byte', 'bytes', 'int', 'fixed',
-                    'string', 'ufixed', 'uint'),
+            (words(('address', 'bool', 'byte', 'bytes', 'int', 'string',
+                    'uint'),
                    suffix=r'\b'), Keyword.Type),
-
+            (words(type_names('bytes', range(1, 32+1)),
+                   suffix=r'\b'), Keyword.Type),
             (words(type_names('int', range(8, 256+1, 8)),
                    suffix=r'\b'), Keyword.Type),
             (words(type_names('uint', range(8, 256+1, 8)),
                    suffix=r'\b'), Keyword.Type),
-            (words(type_names('bytes', range(1, 32+1)),
-                   suffix=r'\b'), Keyword.Type),
-            (words(type_names_mn('fixed', range(8, 256+1, 8), range(0, 80+1, 1)),
-                   suffix=r'\b'), Keyword.Type),
-            (words(type_names_mn('ufixed', range(8, 256+1, 8), range(0, 80+1, 1)),
-                   suffix=r'\b'), Keyword.Type),
+
+            # not yet fully implemented, therefore reserved types
+            (words(('fixed', 'ufixed'), suffix=r'\b'), Keyword.Reserved),
+            (words(type_names_mn('fixed',
+                                 range(8, 256+1, 8),
+                                 range(0, 80+1, 1)),
+                   suffix=r'\b'), Keyword.Reserved),
+            (words(type_names_mn('ufixed',
+                                 range(8, 256+1, 8),
+                                 range(0, 80+1, 1)),
+                   suffix=r'\b'), Keyword.Reserved),
         ],
         'keywords-nested': [
             (r'abi\.encode(|Packed|WithSelector|WithSignature)\b', Name.Builtin),

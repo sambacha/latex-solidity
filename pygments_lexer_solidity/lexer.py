@@ -95,9 +95,6 @@ class SolidityLexer(RegexLexer):
         ],
         # TODO: Yul parsing (not implemented ATM)
         #'yul': [],
-        'natspec': [
-            (r'@(author|dev|notice|param|return|title)\b', Comment.Special),
-        ],
         'comment-parse-single': [
             include('natspec'),
             (r'\n', Comment.Single, '#pop'),
@@ -112,6 +109,28 @@ class SolidityLexer(RegexLexer):
         'comments': [
             (r'//', Comment.Single, 'comment-parse-single'),
             (r'/[*]', Comment.Multiline, 'comment-parse-multi'),
+        ],
+        'keywords-types': [
+            (words(('address', 'bool', 'byte', 'bytes', 'int', 'fixed',
+                    'string', 'ufixed', 'uint'),
+                   suffix=r'\b'), Keyword.Type),
+
+            (words(type_names('int', range(8, 256+1, 8)),
+                   suffix=r'\b'), Keyword.Type),
+            (words(type_names('uint', range(8, 256+1, 8)),
+                   suffix=r'\b'), Keyword.Type),
+            (words(type_names('bytes', range(1, 32+1)),
+                   suffix=r'\b'), Keyword.Type),
+            (words(type_names_mn('fixed', range(8, 256+1, 8), range(0, 80+1, 1)),
+                   suffix=r'\b'), Keyword.Type),
+            (words(type_names_mn('ufixed', range(8, 256+1, 8), range(0, 80+1, 1)),
+                   suffix=r'\b'), Keyword.Type),
+        ],
+        'keywords-nested': [
+            (r'abi\.encode(|Packed|WithSelector|WithSignature)\b', Name.Builtin),
+            (r'block\.(blockhash|coinbase|difficulty|gaslimit|hash|number|timestamp)\b', Name.Builtin),
+            (r'msg\.(data|gas|sender|value)\b', Name.Builtin),
+            (r'tx\.(gasprice|origin)\b', Name.Builtin),
         ],
         'keywords-other': [
             (words(('for', 'in', 'while', 'do', 'break', 'return',
@@ -165,27 +184,8 @@ class SolidityLexer(RegexLexer):
             (r'(wei|finney|szabo|ether)\b', Keyword.Constant),
             (r'(seconds|minutes|hours|days|weeks|years)\b', Keyword.Constant),
         ],
-        'keywords-types': [
-            (words(('address', 'bool', 'byte', 'bytes', 'int', 'fixed',
-                    'string', 'ufixed', 'uint'),
-                   suffix=r'\b'), Keyword.Type),
-
-            (words(type_names('int', range(8, 256+1, 8)),
-                   suffix=r'\b'), Keyword.Type),
-            (words(type_names('uint', range(8, 256+1, 8)),
-                   suffix=r'\b'), Keyword.Type),
-            (words(type_names('bytes', range(1, 32+1)),
-                   suffix=r'\b'), Keyword.Type),
-            (words(type_names_mn('fixed', range(8, 256+1, 8), range(0, 80+1, 1)),
-                   suffix=r'\b'), Keyword.Type),
-            (words(type_names_mn('ufixed', range(8, 256+1, 8), range(0, 80+1, 1)),
-                   suffix=r'\b'), Keyword.Type),
-        ],
-        'keywords-nested': [
-            (r'abi\.encode(|Packed|WithSelector|WithSignature)\b', Name.Builtin),
-            (r'block\.(blockhash|coinbase|difficulty|gaslimit|hash|number|timestamp)\b', Name.Builtin),
-            (r'msg\.(data|gas|sender|value)\b', Name.Builtin),
-            (r'tx\.(gasprice|origin)\b', Name.Builtin),
+        'natspec': [
+            (r'@(author|dev|notice|param|return|title)\b', Comment.Special),
         ],
         'numbers': [
             (r'0[xX][0-9a-fA-F]+', Number.Hex),
@@ -223,6 +223,7 @@ class SolidityLexer(RegexLexer):
         'whitespace': [
             (r'\s+', Text)
         ],
+
         'root': [
             include('comments'),
             include('keywords-types'),
@@ -239,18 +240,16 @@ class SolidityLexer(RegexLexer):
             (r'[})\].]', Punctuation),
 
             # compiler built-ins
-            (r'(this|super)\b', Name.Builtin),
+            (r'(balance|now)\b', Name.Builtin),
             (r'selector\b', Name.Builtin),
+            (r'(super|this)\b', Name.Builtin),
+            (r'(selfdestruct|suicide)\b', Name.Builtin),
 
             # receive/fallback functions
             (r'(receive|fallback)\b', Keyword.Function),
 
             # like block.hash and msg.gas in `keywords-nested`
             (r'(blockhash|gasleft)\b', Name.Function),
-
-            # actually evm instructions, should be Name.Function?..
-            (r'(balance|now)\b', Name.Builtin),
-            (r'(selfdestruct|suicide)\b', Name.Builtin),
 
             # processed into many-instructions
             (r'(send|transfer|call|callcode|delegatecall)\b', Name.Function),

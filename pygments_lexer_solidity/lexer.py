@@ -161,23 +161,24 @@ class SolidityLexer(RegexLexer):
             (r'(import|using)\b', Keyword.Namespace),
 
             # pragmas are not pragmatic in their formatting :/
-            (r'pragma( experimental| solidity|)\b', Keyword.Reserved),
+            (r'pragma( experimental| solidity|)\b', Keyword),
             # misc keywords
-            (r'(_|as|constant|from|is)\b', Keyword.Reserved),
-            (r'emit\b', Keyword.Reserved),
+            (r'(_|as|constant|from|is)\b', Keyword),
+            (r'emit\b', Keyword),
             # built-in modifier
-            (r'payable\b', Keyword.Reserved),
+            (r'payable\b', Keyword),
             # variable location specifiers
-            (r'(memory|storage)\b', Keyword.Reserved),
+            (r'(memory|storage)\b', Keyword),
             # method visibility specifiers
-            (r'(external|internal|private|public)\b', Keyword.Reserved),
+            (r'(external|internal|private|public)\b', Keyword),
             # event parameter specifiers
-            (r'(anonymous|indexed)\b', Keyword.Reserved),
+            (r'(anonymous|indexed)\b', Keyword),
             # added in solc v0.4.0, not covered elsewhere
-            (r'(abstract|pure|static|view)\b', Keyword.Reserved),
+            (r'(abstract|pure|static|view)\b', Keyword),
+            # added in solc v0.6.0, not covered elsewhere
+            (r'(override|virtual)\b', Keyword),
             # access to contracts' codes and name
-            (r'type\(.*\)\.(creationCode|runtimeCode|name)\b',
-             Keyword.Reserved),
+            (r'type\(.*\)\.(creationCode|runtimeCode|name)\b', Keyword),
 
             # reserved for future use since don't-remember-when
             (words(('after', 'case', 'default', 'final', 'in', 'inline',
@@ -187,12 +188,10 @@ class SolidityLexer(RegexLexer):
             # reserved for future use since solc v0.5.0
             (words(('alias', 'apply', 'auto', 'copyof', 'define',
                     'immutable', 'implements', 'macro', 'mutable',
-                    'override', 'partial', 'promise', 'reference',
+                    'partial', 'promise', 'reference',
                     'sealed', 'sizeof', 'supports', 'typedef',
                     'unchecked'),
                    suffix=r'\b'), Keyword.Reserved),
-            # reserved for future use since solc v0.6.0
-            (r'virtual\b', Keyword.Reserved),
 
             # built-in constants
             (r'(true|false)\b', Keyword.Constant),

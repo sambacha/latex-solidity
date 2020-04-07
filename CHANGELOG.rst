@@ -1,6 +1,16 @@
 python-lexer-solidity change log
 ================================
 
+[v0.5.0] - 2020-04-07
+---------------------
+Added
+^^^^^
+* ``YulLexer``, a new lexer that has some commonalities with
+  ``SolidityLexer``, but is made specifically to highlight code
+  (and object descriptions!) written in the Yul language.
+* Also added some missing instructions in inline assembly.
+
+
 [v0.4.1] - 2020-04-03
 ---------------------
 Added

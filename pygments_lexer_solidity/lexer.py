@@ -32,6 +32,46 @@ class BaseLexer(RegexLexer):
     """Common for both Solidity and Yul."""
 
     tokens = {
+        'assembly': [
+            include('comments'),
+            include('numbers'),
+            include('strings'),
+            include('whitespace'),
+
+            (r'\{', Punctuation, '#push'),
+            (r'\}', Punctuation, '#pop'),
+            (r'[(),]', Punctuation),
+            (r':=|=:', Operator),
+            (r'(let)(\s*)(\w*\b)',
+             bygroups(Operator.Word, Text, Name.Variable)),
+
+            # evm instructions; ordered by opcode
+            (r'(stop|add|mul|sub|div|sdiv|mod|smod|addmod|mulmod|exp|'
+             r'signextend|'
+             r'lt|gt|slt|sgt|eq|iszero|and|or|xor|not|byte|shl|shr|sar|'
+             r'keccak256|'
+             r'address|balance|origin|caller|'
+             r'callvalue|calldataload|calldatasize|calldatacopy|'
+             r'codesize|codecopy|gasprice|extcodesize|extcodecopy|'
+             r'returndatasize|returndatacopy|extcodehash|'
+             r'blockhash|coinbase|timestamp|number|difficulty|gaslimit|'
+             r'chainid|selfbalance|'
+             r'pop|mload|mstore|mstore8|sload|sstore|'
+             r'pc|msize|gas|'
+             r'log0|log1|log2|log3|log4|'
+             r'create|call|callcode|return|delegatecall|create2|'
+             r'staticcall|revert|'
+             r'invalid|selfdestruct)\b',
+             Name.Function),
+
+            # obsolete aliases for keccak256 and selfdestruct
+            (r'(sha3|suicide)\b', Name.Function),
+
+            (r'(case|default|for|if|switch)\b', Keyword),
+
+            # everything else is either a local/external var, or label
+            ('[a-zA-Z_]\w*', Name)
+        ],
         'comment-parse-single': [
             include('natspec'),
             (r'\n', Comment.Single, '#pop'),
@@ -133,44 +173,13 @@ class SolidityLexer(BaseLexer):
 
     tokens = {
         'assembly': [
-            include('comments'),
-            include('numbers'),
-            include('strings'),
-            include('whitespace'),
-
-            (r'\{', Punctuation, '#push'),
-            (r'\}', Punctuation, '#pop'),
-            (r'[(),]', Punctuation),
-            (r':=|=:', Operator),
-            (r'(let)(\s*)(\w*\b)',
-             bygroups(Operator.Word, Text, Name.Variable)),
+            # labels
             (r'(\w*\b)(\:[^=])',
              bygroups(Name.Label, Punctuation)),
 
-            # evm instructions; ordered by opcode
-            (r'(stop|add|mul|sub|div|sdiv|mod|smod|addmod|mulmod|exp|'
-             r'signextend|'
-             r'lt|gt|slt|sgt|eq|iszero|and|or|xor|not|byte|shl|shr|sar|'
-             r'keccak256|'
-             r'address|balance|origin|caller|'
-             r'callvalue|calldataload|calldatasize|calldatacopy|'
-             r'codesize|codecopy|gasprice|extcodesize|extcodecopy|'
-             r'returndatasize|returndatacopy|extcodehash|'
-             r'blockhash|coinbase|timestamp|number|difficulty|gaslimit|'
-             r'chainid|selfbalance|'
-             r'pop|mload|mstore|mstore8|sload|sstore|'
-             r'pc|msize|gas|'
-             r'log0|log1|log2|log3|log4|'
-             r'create|call|callcode|return|delegatecall|create2|'
-             r'staticcall|revert|'
-             r'invalid|selfdestruct)\b',
-             Name.Function),
-
             # evm instructions present in `assembly` but not Yul
-            # TODO: move these out somehow
             (r'(jump|jumpi|jumpdest)\b', Name.Function),
-            # NOTE: borrowing helper, although this is not a type
-            # TODO: rename helper
+            # TODO: rename helper: instructions, not types
             (words(type_names('dup', range(1, 16+1)),
                    suffix=r'\b'), Keyword.Function),
             (words(type_names('swap', range(1, 16+1)),
@@ -178,13 +187,7 @@ class SolidityLexer(BaseLexer):
             (words(type_names('push', range(1, 32+1)),
                    suffix=r'\b'), Keyword.Function),
 
-            # obsolete aliases for keccak256 and selfdestruct
-            (r'(sha3|suicide)\b', Name.Function),
-
-            (r'(case|default|for|if|switch)\b', Keyword),
-
-            # everything else is either a local/external var, or label
-            ('[a-zA-Z_]\w*', Name)
+            inherit,
         ],
         'keywords-builtins': [
             # compiler built-ins
@@ -320,7 +323,7 @@ class SolidityLexer(BaseLexer):
             ('[a-zA-Z$_]\w*', Name),
 
 
-        ] # 'root'
+        ],
     } # tokens
 
 
@@ -335,9 +338,14 @@ class YulLexer(BaseLexer):
     flags = re.DOTALL | re.UNICODE | re.MULTILINE
 
     tokens = {
-        'assembly': SolidityLexer.tokens['assembly'],
         'root': [
-            #inherit,
+            inherit,
+
+            # Yul-specific
+            (r'(code|data|function|object)\b', Keyword),
+            (r'data(copy|offset|size)\b', Keyword.Function),
+            (r'->', Operator),
+
             include('assembly'),
-        ]
+        ],
     } # tokens

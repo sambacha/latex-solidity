@@ -41,7 +41,7 @@ class SolidityLexer(RegexLexer):
 
     def type_names_mn(prefix, sizerangem, sizerangen):
         """
-        Helper for type name generation, like: fixed0x8 .. fixed0x256
+        Helper for type name generation, like: fixed8x0 .. fixed26x80
 
         Assumes that the size range passed in is valid.
         """
@@ -76,22 +76,41 @@ class SolidityLexer(RegexLexer):
             (r'(\w*\b)(\:[^=])',
              bygroups(Name.Label, Punctuation)),
 
-            (r'if\b', Keyword.Reserved),
-
-            # evm instructions
+            # evm instructions; ordered by opcode
             (r'(stop|add|mul|sub|div|sdiv|mod|smod|addmod|mulmod|exp|'
-             r'signextend|lt|gt|slt|sgt|eq|iszero|and|or|xor|not|byte|'
-             r'keccak256|sha3|address|balance|origin|caller|'
+             r'signextend|'
+             r'lt|gt|slt|sgt|eq|iszero|and|or|xor|not|byte|shl|shr|sar|'
+             r'keccak256|'
+             r'address|balance|origin|caller|'
              r'callvalue|calldataload|calldatasize|calldatacopy|'
              r'codesize|codecopy|gasprice|extcodesize|extcodecopy|'
+             r'returndatasize|returndatacopy|extcodehash|'
              r'blockhash|coinbase|timestamp|number|difficulty|gaslimit|'
-             r'pop|mload|mstore|mstore8|sload|sstore|for|switch|'
-             r'jump|jumpi|pc|msize|gas|jumpdest|push1|push2|'
-             r'push32|dup1|dup2|dup16|swap1|swap2|swap16|log0|log1|log4|'
-             r'create|call|callcode|return|delegatecall|suicide|'
-             r'returndatasize|returndatacopy|staticcall|revert|'
-             r'invalid)\b',
+             r'chainid|selfbalance|'
+             r'pop|mload|mstore|mstore8|sload|sstore|'
+             r'pc|msize|gas|'
+             r'log0|log1|log2|log3|log4|'
+             r'create|call|callcode|return|delegatecall|create2|'
+             r'staticcall|revert|'
+             r'invalid|selfdestruct)\b',
              Name.Function),
+
+            # evm instructions present in `assembly` but not Yul
+            # TODO: move these out somehow
+            (r'(jump|jumpi|jumpdest)\b', Name.Function),
+            # NOTE: borrowing helper, although this is not a type
+            # TODO: rename helper
+            (words(type_names('dup', range(1, 16+1)),
+                   suffix=r'\b'), Keyword.Function),
+            (words(type_names('swap', range(1, 16+1)),
+                   suffix=r'\b'), Keyword.Function),
+            (words(type_names('push', range(1, 32+1)),
+                   suffix=r'\b'), Keyword.Function),
+
+            # obsolete aliases for keccak256 and selfdestruct
+            (r'(sha3|suicide)\b', Name.Function),
+
+            (r'(case|default|for|if|switch)\b', Keyword),
 
             # everything else is either a local/external var, or label
             ('[a-zA-Z_]\w*', Name)

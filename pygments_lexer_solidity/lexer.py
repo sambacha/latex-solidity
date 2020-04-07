@@ -11,15 +11,86 @@
 
 import re
 
-from pygments.lexer import RegexLexer, include, bygroups, default, using, \
-    this, words, combined
+from pygments.lexer import (
+    RegexLexer,
+    bygroups,
+    combined,
+    default,
+    include,
+    inherit,
+    this,
+    using,
+    words,
+)
 from pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Other
 
 __all__ = ['SolidityLexer', 'YulLexer']
 
 
-class SolidityLexer(RegexLexer):
+class BaseLexer(RegexLexer):
+    """Common for both Solidity and Yul."""
+
+    tokens = {
+        'comment-parse-single': [
+            include('natspec'),
+            (r'\n', Comment.Single, '#pop'),
+            (r'[^\n]', Comment.Single),
+        ],
+        'comment-parse-multi': [
+            include('natspec'),
+            (r'[^*/]', Comment.Multiline),
+            (r'\*/', Comment.Multiline, '#pop'),
+            (r'[*/]', Comment.Multiline),
+        ],
+        'comments': [
+            (r'//', Comment.Single, 'comment-parse-single'),
+            (r'/[*]', Comment.Multiline, 'comment-parse-multi'),
+        ],
+        'natspec': [
+            (r'@(author|dev|notice|param|return|title)\b',
+             Comment.Special),
+        ],
+        'numbers': [
+            (r'0[xX][0-9a-fA-F]+', Number.Hex),
+            (r'[0-9][0-9]*\.[0-9]+([eE][0-9]+)?', Number.Float),
+            (r'[0-9]+([eE][0-9]+)?', Number.Integer),
+        ],
+        'string-parse-common': [
+            # escapes
+            (r'\\(u[0-9a-fA-F]{4}|x..|[^x])', String.Escape),
+            # almost everything else is plain characters
+            (r'[^\\"\'\n]+', String),
+            # line continuation
+            (r'\\\n', String),
+            # stray backslash
+            (r'\\', String)
+        ],
+        'string-parse-double': [
+            (r'"', String, '#pop'),
+            (r"'", String)
+        ],
+        'string-parse-single': [
+            (r"'", String, '#pop'),
+            (r'"', String)
+        ],
+        'strings': [
+            # hexadecimal string literals
+            (r"hex'[0-9a-fA-F]+'", String),
+            (r'hex"[0-9a-fA-F]+"', String),
+            # usual strings
+            (r'"', String, combined('string-parse-common',
+                                    'string-parse-double')),
+            (r"'", String, combined('string-parse-common',
+                                    'string-parse-single'))
+        ],
+        'whitespace': [
+            (r'\s+', Text)
+        ],
+    } # tokens
+
+
+class SolidityLexer(BaseLexer):
     """For Solidity source code."""
 
     name = 'Solidity'
@@ -114,21 +185,6 @@ class SolidityLexer(RegexLexer):
 
             # everything else is either a local/external var, or label
             ('[a-zA-Z_]\w*', Name)
-        ],
-        'comment-parse-single': [
-            include('natspec'),
-            (r'\n', Comment.Single, '#pop'),
-            (r'[^\n]', Comment.Single),
-        ],
-        'comment-parse-multi': [
-            include('natspec'),
-            (r'[^*/]', Comment.Multiline),
-            (r'\*/', Comment.Multiline, '#pop'),
-            (r'[*/]', Comment.Multiline),
-        ],
-        'comments': [
-            (r'//', Comment.Single, 'comment-parse-single'),
-            (r'/[*]', Comment.Multiline, 'comment-parse-multi'),
         ],
         'keywords-builtins': [
             # compiler built-ins
@@ -241,48 +297,9 @@ class SolidityLexer(RegexLexer):
             (r'(seconds|minutes|hours|days|weeks|years)\b',
              Keyword.Constant),
         ],
-        'natspec': [
-            (r'@(author|dev|notice|param|return|title)\b',
-             Comment.Special),
-        ],
-        'numbers': [
-            (r'0[xX][0-9a-fA-F]+', Number.Hex),
-            (r'[0-9][0-9]*\.[0-9]+([eE][0-9]+)?', Number.Float),
-            (r'[0-9]+([eE][0-9]+)?', Number.Integer),
-        ],
-        'string-parse-common': [
-            # escapes
-            (r'\\(u[0-9a-fA-F]{4}|x..|[^x])', String.Escape),
-            # almost everything else is plain characters
-            (r'[^\\"\'\n]+', String),
-            # line continuation
-            (r'\\\n', String),
-            # stray backslash
-            (r'\\', String)
-        ],
-        'string-parse-double': [
-            (r'"', String, '#pop'),
-            (r"'", String)
-        ],
-        'string-parse-single': [
-            (r"'", String, '#pop'),
-            (r'"', String)
-        ],
-        'strings': [
-            # hexadecimal string literals
-            (r"hex'[0-9a-fA-F]+'", String),
-            (r'hex"[0-9a-fA-F]+"', String),
-            # usual strings
-            (r'"', String, combined('string-parse-common',
-                                    'string-parse-double')),
-            (r"'", String, combined('string-parse-common',
-                                    'string-parse-single'))
-        ],
-        'whitespace': [
-            (r'\s+', Text)
-        ],
 
         'root': [
+            inherit,
             include('comments'),
             include('keywords-builtins'),
             include('keywords-functions'),
@@ -300,12 +317,14 @@ class SolidityLexer(RegexLexer):
             (r'[})\].]', Punctuation),
 
             # everything else is a var/function name
-            ('[a-zA-Z$_]\w*', Name)
+            ('[a-zA-Z$_]\w*', Name),
+
+
         ] # 'root'
     } # tokens
 
 
-class YulLexer(RegexLexer):
+class YulLexer(BaseLexer):
     """For Yul stand-alone source code."""
 
     name = 'Yul'
@@ -315,21 +334,10 @@ class YulLexer(RegexLexer):
 
     flags = re.DOTALL | re.UNICODE | re.MULTILINE
 
-    tokens_to_copy = [
-        'assembly',
-        'comment-parse-single',
-        'comment-parse-multi',
-        'comments',
-        'natspec',
-        'numbers',
-        'string-parse-common',
-        'string-parse-double',
-        'string-parse-single',
-        'strings',
-        'whitespace',
-    ]
-    tokens = {token: SolidityLexer.tokens[token]
-              for token in SolidityLexer.tokens.keys() & tokens_to_copy}
-    tokens['root'] = [
-        include('assembly'),
-    ] # tokens['root']
+    tokens = {
+        'assembly': SolidityLexer.tokens['assembly'],
+        'root': [
+            #inherit,
+            include('assembly'),
+        ]
+    } # tokens

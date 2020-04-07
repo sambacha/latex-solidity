@@ -16,13 +16,11 @@ from pygments.lexer import RegexLexer, include, bygroups, default, using, \
 from pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Other
 
-__all__ = ['SolidityLexer']
+__all__ = ['SolidityLexer', 'YulLexer']
 
 
 class SolidityLexer(RegexLexer):
-    """
-    For Solidity source code.
-    """
+    """For Solidity source code."""
 
     name = 'Solidity'
     aliases = ['sol', 'solidity']
@@ -98,8 +96,6 @@ class SolidityLexer(RegexLexer):
             # everything else is either a local/external var, or label
             ('[a-zA-Z_]\w*', Name)
         ],
-        # TODO: Yul parsing (not implemented ATM)
-        #'yul': [],
         'comment-parse-single': [
             include('natspec'),
             (r'\n', Comment.Single, '#pop'),
@@ -288,3 +284,33 @@ class SolidityLexer(RegexLexer):
             ('[a-zA-Z$_]\w*', Name)
         ] # 'root'
     } # tokens
+
+
+class YulLexer(RegexLexer):
+    """For Yul stand-alone source code."""
+
+    name = 'Yul'
+    aliases = ['yul']
+    filenames = ['*.yul']
+    mimetypes = ['text/x-yul']
+
+    flags = re.DOTALL | re.UNICODE | re.MULTILINE
+
+    tokens_to_copy = [
+        'assembly',
+        'comment-parse-single',
+        'comment-parse-multi',
+        'comments',
+        'natspec',
+        'numbers',
+        'string-parse-common',
+        'string-parse-double',
+        'string-parse-single',
+        'strings',
+        'whitespace',
+    ]
+    tokens = {token: SolidityLexer.tokens[token]
+              for token in SolidityLexer.tokens.keys() & tokens_to_copy}
+    tokens['root'] = [
+        include('assembly'),
+    ] # tokens['root']

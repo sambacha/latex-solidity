@@ -1,3 +1,3 @@
-from .lexer import SolidityLexer
+from .lexer import SolidityLexer, YulLexer
 
-__all__ = ['SolidityLexer']
+__all__ = ['SolidityLexer', 'YulLexer']

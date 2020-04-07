@@ -27,5 +27,6 @@ setup(
     entry_points="""
     [pygments.lexers]
     solidity = pygments_lexer_solidity:SolidityLexer
+    yul = pygments_lexer_solidity:YulLexer
     """
 )

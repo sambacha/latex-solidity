@@ -1,6 +1,14 @@
 python-lexer-solidity change log
 ================================
 
+[v0.5.1] - 2020-04-20
+---------------------
+Changed
+^^^^^^^
+* Detect ``:`` as punctuation when used in Yul variable declaration
+  with type hints.
+
+
 [v0.5.0] - 2020-04-07
 ---------------------
 Added

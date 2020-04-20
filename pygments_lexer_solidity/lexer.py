@@ -321,8 +321,6 @@ class SolidityLexer(BaseLexer):
 
             # everything else is a var/function name
             ('[a-zA-Z$_]\w*', Name),
-
-
         ],
     } # tokens
 
@@ -347,5 +345,8 @@ class YulLexer(BaseLexer):
             (r'->', Operator),
 
             include('assembly'),
+
+            # ':' - variable declaration type hint - catch it last
+            (':', Punctuation),
         ],
     } # tokens

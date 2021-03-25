@@ -74,11 +74,13 @@ class BaseLexer(RegexLexer):
         ],
         'comment-parse-single': [
             include('natspec'),
+            include('spdx'),
             (r'\n', Comment.Single, '#pop'),
             (r'[^\n]', Comment.Single),
         ],
         'comment-parse-multi': [
             include('natspec'),
+            include('spdx'),
             (r'[^*/]', Comment.Multiline),
             (r'\*/', Comment.Multiline, '#pop'),
             (r'[*/]', Comment.Multiline),
@@ -91,6 +93,10 @@ class BaseLexer(RegexLexer):
             (r'@(author|dev|inheritdoc|notice|param|return|title|'
              r'custom:[a-z][a-z-]*)\b',
              Comment.Special),
+        ],
+        'spdx': [
+            (r'SPDX-License-Identifier:',
+            Comment.Special),
         ],
         'numbers': [
             (r'0[xX][0-9a-fA-F]+', Number.Hex),

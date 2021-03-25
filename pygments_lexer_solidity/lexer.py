@@ -119,6 +119,11 @@ class BaseLexer(RegexLexer):
             # hexadecimal string literals
             (r"hex'[0-9a-fA-F]+'", String),
             (r'hex"[0-9a-fA-F]+"', String),
+            # unicode string literals
+            (r'unicode"', String, combined('string-parse-common',
+                                    'string-parse-double')),
+            (r"unicode'", String, combined('string-parse-common',
+                                    'string-parse-single')),
             # usual strings
             (r'"', String, combined('string-parse-common',
                                     'string-parse-double')),
@@ -242,7 +247,7 @@ class SolidityLexer(BaseLexer):
         'keywords-nested': [
             (r'abi\.encode(|Packed|WithSelector|WithSignature)\b',
              Name.Builtin),
-            (r'block\.(blockhash|coinbase|difficulty|gaslimit|hash|'
+            (r'block\.(blockhash|chainid|coinbase|difficulty|gaslimit|hash|'
              r'number|timestamp)\b', Name.Builtin),
             (r'msg\.(data|gas|sender|value)\b', Name.Builtin),
             (r'tx\.(gasprice|origin)\b', Name.Builtin),
@@ -263,7 +268,7 @@ class SolidityLexer(BaseLexer):
             (r'(import|using)\b', Keyword.Namespace),
 
             # pragmas are not pragmatic in their formatting :/
-            (r'pragma( experimental| solidity|)\b', Keyword),
+            (r'pragma( experimental| solidity| abicoder|)\b', Keyword),
             # misc keywords
             (r'(_|as|constant|from|is)\b', Keyword),
             (r'emit\b', Keyword),
@@ -279,8 +284,10 @@ class SolidityLexer(BaseLexer):
             (r'(abstract|pure|static|view)\b', Keyword),
             # added in solc v0.6.0, not covered elsewhere
             (r'(override|virtual)\b', Keyword),
-            # access to contracts' codes and name
-            (r'type\(.*\)\.(creationCode|runtimeCode|name)\b', Keyword),
+            # added in solc v0.8.0
+            (r'(unchecked)\b', Keyword),
+            # type information
+            (r'type\(.*\)\.(min|max|interfaceId|creationCode|runtimeCode|name)\b', Keyword),
 
             # reserved for future use since don't-remember-when
             (words(('after', 'case', 'default', 'final', 'in', 'inline',
@@ -291,8 +298,7 @@ class SolidityLexer(BaseLexer):
             (words(('alias', 'apply', 'auto', 'copyof', 'define',
                     'immutable', 'implements', 'macro', 'mutable',
                     'partial', 'promise', 'reference',
-                    'sealed', 'sizeof', 'supports', 'typedef',
-                    'unchecked'),
+                    'sealed', 'sizeof', 'supports', 'typedef'),
                    suffix=r'\b'), Keyword.Reserved),
 
             # built-in constants

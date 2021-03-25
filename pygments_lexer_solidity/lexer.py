@@ -88,7 +88,8 @@ class BaseLexer(RegexLexer):
             (r'/[*]', Comment.Multiline, 'comment-parse-multi'),
         ],
         'natspec': [
-            (r'@(author|dev|notice|param|return|title)\b',
+            (r'@(author|dev|inheritdoc|notice|param|return|title|'
+             r'custom:[a-z][a-z-]*)\b',
              Comment.Special),
         ],
         'numbers': [

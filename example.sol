@@ -160,11 +160,16 @@ contract Types is Strings {
 /**
    \brief Examples of bad practices.
 
-   TODO: This special doxygen natspec notation is not parsed yet.
+   TODO: This special NatSpec notation is not parsed yet.
 
    @author Noel Maersk
  */
-/// TODO: Neither is this one.
+/// Triple-slash NatSpec should work.
+/// @title Some examples of bad practices.
+/// @author Noel Maersk
+/// @notice Very old, might've been "fixed" by obsoletion.
+/// @dev This is a dummy comment.
+/// @custom:unmaintained This code is not maintained.
 
 contract BadPractices {
     address constant creator; /* `internal` by default */

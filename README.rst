@@ -16,7 +16,25 @@ stand-alone code blocks.
 Installation
 ------------
 
-``pip install pygments-lexer-solidity``
+Set up your virtual environment, no matter how you do it.
+
+.. code-block:: shell
+   
+   % virtualenv .virtualenv/`basename $(pwd)`
+   % source .virtualenv/`basename $(pwd)`/bin/activate
+
+Then install via PyPI:
+
+.. code-block:: shell
+   
+   % pip install pygments-lexer-solidity
+
+Or from a local git repo:
+
+.. code-block:: shell
+   
+   % pip install -r requirements.txt
+   % pip install -e .
 
 
 Usage
@@ -42,7 +60,7 @@ Then use ``.. code-block:: solidity`` for Solidity code blocks, or
 Command-line
 ^^^^^^^^^^^^
 
-If you just want to test a local copy of the lexer on the CLI:
+To test a local copy of the lexer on the CLI:
 
 .. code-block:: shell
    
@@ -52,7 +70,7 @@ To generate a colorised HTML file:
 
 .. code-block:: shell
    
-   % pygmentize -v -O full,style=fruity -o sol.html example.sol
+   % pygmentize -v -O full,style=fruity -o example.sol.html example.sol
 
 
 License

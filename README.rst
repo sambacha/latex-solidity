@@ -6,7 +6,7 @@ Solidity lexer for Pygments, distributed as a PyPI package.
 If you want pretty syntax highlighting in documentation for Solidity
 files, and you're using Pygments, this might just be the thing for you.
 
-Currently, Solidity keywords up to version 0.6.0 are included, to the
+Currently, Solidity keywords up to version 0.8.0 are included, to the
 best of my ability. MRs are welcome!
 
 The Yul intermediate language is also supported, including for

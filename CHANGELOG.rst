@@ -1,12 +1,25 @@
 python-lexer-solidity change log
 ================================
 
+[v0.7.0] - 2021-03-25
+---------------------
+Added
+^^^^^
+* Keywords from Solidity v0.7 and v0.8. (`#5`_)
+* In-comment highlighting before the SPDX license identifier. (`#6`_)
+
+Thanks to @axic!
+
+.. _#5: https://gitlab.com/veox/pygments-lexer-solidity/-/merge_requests/5
+.. _#6: https://gitlab.com/veox/pygments-lexer-solidity/-/merge_requests/6
+
+
 [v0.6.0] - 2021-03-25
 ---------------------
 Added
 ^^^^^
 * Two new NatSpec keywords, ``@inheritdoc`` and ``@custom:..``.
-* Python version requirement in ``setup.py`` (`#1`_).
+* Python version requirement in ``setup.py``. (`#1`_)
 
 .. _#1: https://gitlab.com/veox/pygments-lexer-solidity/-/issues/1
 

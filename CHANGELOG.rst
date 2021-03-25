@@ -1,6 +1,16 @@
 python-lexer-solidity change log
 ================================
 
+[v0.6.0] - 2021-03-25
+---------------------
+Added
+^^^^^
+* Two new NatSpec keywords, ``@inheritdoc`` and ``@custom:..``.
+* Python version requirement in ``setup.py`` (`#1`_).
+
+.. _#1: https://gitlab.com/veox/pygments-lexer-solidity/-/issues/1
+
+
 [v0.5.1] - 2020-04-20
 ---------------------
 Changed

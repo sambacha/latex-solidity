@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-2-Clause
+
 pragma solidity ^0.6.0;
 pragma ABIEncoderV2;
 pragma experimental SMTChecker;

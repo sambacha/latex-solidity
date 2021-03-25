@@ -5,3 +5,4 @@ test:
     - pip install -r requirements.txt
     - pip install -e .
     - pygmentize example.sol
+    - pygmentize example.yul

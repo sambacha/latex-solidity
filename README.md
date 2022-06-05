@@ -17,9 +17,11 @@ This repo builds on top of the source [which is can be located at https://gitlab
 
 To use the lexer for LaTeX highlighting simply extract the `lexer-latex.zip` file and upload both the `__init__.py` and `lexer.py` in your document directory or use a service like [overleaf.com](https://www.overleaf.com/).
 
-A reference LaTeX document and generated PDF are included. This was rendered and generated using the overleaf web application.
+A reference LaTeX document and generated PDF are included. This was rendered and generated using the overleaf web application. [see latex/example.pdf](./latex/example.pdf)
 
 ## LaTeX
+
+![](https://d.pr/i/7G8jZs.jpeg)
 
 ### Solidity
 

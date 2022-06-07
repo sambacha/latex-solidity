@@ -1,5 +1,7 @@
 # pygments-lexer-solidity
 
+> Original README
+
 Solidity and Yul lexer for Pygments, distributed as a PyPI package.
 
 If you want pretty syntax highlighting in documentation for Solidity
@@ -13,9 +15,14 @@ stand-alone code blocks.
 
 ## Overview
 
+> LaTeX Repo README
+
 This repo builds on top of the source [which is can be located at https://gitlab.com/veox/pygments-lexer-solidity](https://gitlab.com/veox/pygments-lexer-solidity/).
 
-To use the lexer for LaTeX highlighting simply extract the `lexer-latex.zip` file and upload both the `__init__.py` and `lexer.py` in your document directory or use a service like [overleaf.com](https://www.overleaf.com/).
+To use the lexer for LaTeX highlighting simply extract the `lexer-latex.zip` file and upload both the `__init__.py` and `lexer.py` in your document directory or use a service like [overleaf.com](https://www.overleaf.com/)
+
+- Download zip archive of minimal template for overleaf.com - <br /> [https://github.com/sambacha/latex-solidity/releases/download/v202.06/overleaft-solidity-template.zip](https://github.com/sambacha/latex-solidity/releases/download/v202.06/overleaft-solidity-template.zip)
+
 
 A reference LaTeX document and generated PDF are included. This was rendered and generated using the overleaf web application. [see latex/example.pdf](./latex/example.pdf)
 
